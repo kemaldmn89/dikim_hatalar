@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang='tr'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Pelin Triko Kalite Panosu</title>
+<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
+<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#2c3a2a;}
+.wrap{display:flex;flex-direction:column;height:100vh;padding:12px 14px;gap:10px;}
+.hdr{background:#fff;border:1px solid #dde3e8;border-top:3px solid #5aab1e;border-radius:10px;
+  padding:10px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.hdr-logo{display:flex;align-items:center;gap:12px;}
+.hdr-logo img{height:36px;object-fit:contain;}
+.hdr-divider{width:1px;height:32px;background:#e0e4e8;}
+.hdr-title{font-size:1rem;font-weight:700;color:#1a2818;letter-spacing:.5px;text-transform:uppercase;}
+.hdr-sub{font-size:.65rem;color:#7a8e72;margin-top:2px;}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.badge-live{background:#5aab1e;color:#fff;font-size:.62rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;}
+.badge-date{font-size:.68rem;color:#5a6e52;background:#eef3ea;padding:3px 10px;border-radius:20px;}
+.badge-dept{font-size:.68rem;color:#1a5f8a;background:#e4f0f9;padding:3px 10px;border-radius:20px;font-weight:700;}
+.toplam-row{display:flex;gap:10px;flex-shrink:0;}
+.mini-kpi{flex:1;background:#fff;border:1px solid #dde3e8;border-radius:10px;padding:10px 14px;text-align:center;}
+.mk-l{font-size:.6rem;text-transform:uppercase;color:#8a96a0;font-weight:700;letter-spacing:.5px;margin-bottom:4px;}
+.mk-v{font-size:1.6rem;font-weight:800;line-height:1;}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex-shrink:0;}
+.kpi{background:#fff;border:1px solid #dde3e8;border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.k1::after{background:#5aab1e;} .kpi.k2::after{background:#c0392b;} .kpi.k3::after{background:#2980b9;}
+.kpi-label{font-size:.63rem;font-weight:700;text-transform:uppercase;color:#8a96a0;margin-bottom:8px;letter-spacing:.5px;}
+.kpi-items{display:flex;flex-direction:column;gap:5px;}
+.kpi-item{display:flex;align-items:center;gap:6px;}
+.kpi-rank{font-size:.6rem;font-weight:700;color:#fff;border-radius:4px;padding:1px 5px;min-width:18px;text-align:center;flex-shrink:0;}
+.kpi.k1 .kpi-rank{background:#5aab1e;} .kpi.k2 .kpi-rank{background:#c0392b;} .kpi.k3 .kpi-rank{background:#2980b9;}
+.kpi-name{font-size:.77rem;color:#3a4a38;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.kpi-val{font-size:.82rem;font-weight:700;flex-shrink:0;}
+.kpi.k1 .kpi-val{color:#3a7e12;} .kpi.k2 .kpi-val{color:#a32d2d;} .kpi.k3 .kpi-val{color:#1a5f8a;}
+.grf-row{display:flex;gap:10px;flex:1;min-height:0;}
+.panel{background:#fff;border:1px solid #dde3e8;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;}
+.panel.p-bar{flex:1.6;} .panel.p-list{flex:1;}
+.panel-title{font-size:.66rem;font-weight:700;text-transform:uppercase;color:#7a8e72;margin-bottom:10px;letter-spacing:.5px;
+  display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.panel-title::after{content:'';flex:1;height:1px;background:#eef0ee;}
+.chart-box{flex:1;position:relative;min-height:0;}
+.hata-liste{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.hata-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid #f4f6f4;}
+.hata-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.hata-adi{flex:1;font-size:.75rem;color:#3a4a38;}
+.hata-bar-w{width:65px;} .hata-bar-bg{background:#eef0ee;border-radius:3px;height:5px;} .hata-bar-ic{height:5px;border-radius:3px;}
+.hata-adet{font-size:.8rem;font-weight:700;color:#2c3a2a;min-width:26px;text-align:right;}
+.hata-pct{font-size:.67rem;color:#8a96a0;min-width:30px;text-align:right;}
+.ftr{text-align:center;color:#b0bab0;font-size:.6rem;padding:2px 0;flex-shrink:0;}
+html,body{height:100%;overflow:hidden;}
+</style></head><body>
+<div class='wrap'>
+<div class='hdr'>
+  <div class='hdr-logo'>
+    <img src='https://pelintriko.com.tr/wp-content/uploads/2020/06/pelin_logo_v2.jpg' alt='Pelin Triko' onerror="this.style.display='none'">
+    <div class='hdr-divider'></div>
+    <div><div class='hdr-title'>Kalite Kontrol Panosu</div><div class='hdr-sub'>Son G&#252;ncelleme: 12.06.2026 17:29</div></div>
+  </div>
+  <div class='hdr-right'>
+    <span class='badge-dept'>&#9632; UTU_PAKET</span>
+    <span class='badge-live'>&#9679; CANLI</span>
+    <span class='badge-date'>12.06.2026</span>
+  </div>
+</div>
+<div class='toplam-row'>
+  <div class='mini-kpi'><div class='mk-l'>Toplam Hata</div><div class='mk-v' style='color:#3a7e12' id='totHata'>0</div></div>
+  <div class='mini-kpi'><div class='mk-l'>Toplam Sipari&#351;</div><div class='mk-v' style='color:#1a5f8a' id='totSiparis'>0</div></div>
+  <div class='mini-kpi'><div class='mk-l'>Hata T&#252;r&#252;</div><div class='mk-v' style='color:#7a4ab0' id='totHataTur'>0</div></div>
+  <div class='mini-kpi'><div class='mk-l'>Departman</div><div class='mk-v' style='color:#1a5f8a;font-size:1rem;'>UTU_PAKET</div></div>
+</div>
+<div class='kpi-row'>
+  <div class='kpi k1'><div class='kpi-label'>En Sorunlu 3 Sipari&#351;</div><div class='kpi-items' id='top3Siparis'></div></div>
+  <div class='kpi k2'><div class='kpi-label'>En S&#305;k 3 Hata</div><div class='kpi-items' id='top3Hata'></div></div>
+  <div class='kpi k3'><div class='kpi-label'>G&#252;nl&#252;k Hata Da&#287;&#305;l&#305;m&#305;</div><div style='position:relative;height:64px;margin-top:2px;'><canvas id='pieChart' role='img' aria-label='Hata dagilimi pasta grafigi'></canvas></div></div>
+</div>
+<div class='grf-row'>
+  <div class='panel p-bar'><div class='panel-title'>Sipari&#351; Bazl&#305; Hata Da&#287;&#305;l&#305;m&#305; (Order | Model)</div><div class='chart-box'><canvas id='barChart' role='img' aria-label='Siparis bazli hata dagilimi'></canvas></div></div>
+  <div class='panel p-list'><div class='panel-title'>Hata T&#252;rleri Da&#287;&#305;l&#305;m&#305;</div><div class='hata-liste' id='hataListe'></div></div>
+</div>
+<div class='ftr'>Pelin Triko Kalite Sistemi &mdash; UTU_PAKET</div>
+</div>
+<script>
+try{
+const hamVeri=[{tarih:'3.06.2026 15:54',order:'U26FK055',model:'60915-2025',renk:'',hata:'Patlak, Kaçık, Göz Kaçığı',adet:2,dept:''},{tarih:'3.06.2026 15:54',order:'U26FK061',model:'60937-FW26',renk:'',hata:'Patlak, Kaçık, Göz Kaçığı',adet:1,dept:''},{tarih:'3.06.2026 15:54',order:'U26FK061',model:'60937-FW26',renk:'',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:6,dept:''},{tarih:'3.06.2026 15:54',order:'U26FK060',model:'60936-FW26',renk:'',hata:'Patlak, Kaçık, Göz Kaçığı',adet:7,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK039',model:'64935-2025',renk:'LACİ',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:1,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK039',model:'64935-2025',renk:'LACİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:15,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK039',model:'64935-2025',renk:'LACİ',hata:'Leke (İplik Karışımları, Yağ Lekesi, Pas Lekesi vb)',adet:10,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK055',model:'60915-2025',renk:'LACİ',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:2,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK055',model:'60915-2025',renk:'LACİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:2,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK061',model:'60937-FW26',renk:'GRİ',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:8,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK061',model:'60937-FW26',renk:'GRİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:3,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK061',model:'60937-FW26',renk:'GRİ',hata:'Dikiş Tamiri (Punt. Romayöz / Singer Atlaması Sökülmesi vb.',adet:10,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK059',model:'60935-FW26',renk:'YEŞİL',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:2,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK059',model:'60935-FW26',renk:'YEŞİL',hata:'Dikiş Tamiri (Punt. Romayöz / Singer Atlaması Sökülmesi vb.',adet:3,dept:''},{tarih:'4.06.2026 09:39',order:'U26FK056',model:'60916-2025',renk:'LACİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:5,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK056',model:'60916-2025',renk:'LACİ',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:2,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK057',model:'60941',renk:'LACİ',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:2,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK057',model:'60941',renk:'LACİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:1,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK057',model:'60941',renk:'LACİ',hata:'Leke (İplik Karışımları, Yağ Lekesi, Pas Lekesi vb)',adet:3,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK059',model:'60935-FW26',renk:'A.GRİ',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:3,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK059',model:'60935-FW26',renk:'A.GRİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:2,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK059',model:'60935-FW26',renk:'A.GRİ',hata:'Leke (İplik Karışımları, Yağ Lekesi, Pas Lekesi vb)',adet:4,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK061',model:'60937-FW26',renk:'KAHVE',hata:'Patlak, Kaçık, Göz Kaçığı',adet:2,dept:''},{tarih:'5.06.2026 17:35',order:'U26FK061',model:'60937-FW26',renk:'KAHVE',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:3,dept:''},{tarih:'8.06.2026 17:37',order:'U26MS016',model:'1018060-X',renk:'YEŞİL',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:6,dept:''},{tarih:'8.06.2026 17:37',order:'U26MS016',model:'1018060-X',renk:'YEŞİL',hata:'Patlak, Kaçık, Göz Kaçığı',adet:1,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK056',model:'60916-2025',renk:'',hata:'Patlak, Kaçık, Göz Kaçığı',adet:5,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK061',model:'60937-FW26',renk:'',hata:'Patlak, Kaçık, Göz Kaçığı',adet:9,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK061',model:'60937-FW26',renk:'',hata:'Leke (İplik Karışımları, Yağ Lekesi, Pas Lekesi vb)',adet:10,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK061',model:'60937-FW26',renk:'',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:5,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK058',model:'60934-FW26',renk:'',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:1,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK058',model:'60934-FW26',renk:'',hata:'Patlak, Kaçık, Göz Kaçığı',adet:3,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK059',model:'60935-FW26',renk:'',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:1,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK059',model:'60935-FW26',renk:'',hata:'Patlak, Kaçık, Göz Kaçığı',adet:7,dept:''},{tarih:'8.06.2026 17:37',order:'U26FK059',model:'60935-FW26',renk:'',hata:'Leke (İplik Karışımları, Yağ Lekesi, Pas Lekesi vb)',adet:6,dept:''},{tarih:'9.06.2026 17:42',order:'U26FK060',model:'60936-FW26',renk:'Standart',hata:'Diğer Hata Tipi',adet:45,dept:'UTU_PAKET'},{tarih:'9.06.2026 17:42',order:'U26MS016',model:'1018060-X',renk:'YEŞİL',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:6,dept:'UTU_PAKET'},{tarih:'9.06.2026 17:42',order:'U26MS016',model:'1018060-X',renk:'YEŞİL',hata:'Patlak, Kaçık, Göz Kaçığı',adet:2,dept:'UTU_PAKET'},{tarih:'9.06.2026 17:42',order:'U26MS016',model:'1018060-X',renk:'YEŞİL',hata:'Diğer Hata Tipi',adet:42,dept:'UTU_PAKET'},{tarih:'9.06.2026 17:42',order:'U26FK055',model:'60915-2025',renk:'Standart',hata:'Patlak, Kaçık, Göz Kaçığı',adet:10,dept:'UTU_PAKET'},{tarih:'9.06.2026 17:42',order:'U26FK061',model:'60937-FW26',renk:'Standart',hata:'Patlak, Kaçık, Göz Kaçığı',adet:4,dept:'UTU_PAKET'},{tarih:'9.06.2026 17:42',order:'U26FK061',model:'60937-FW26',renk:'Standart',hata:'Diğer Hata Tipi',adet:60,dept:'UTU_PAKET'},{tarih:'9.06.2026 17:42',order:'U26FK059',model:'60935-FW26',renk:'Standart',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:1,dept:'UTU_PAKET'},{tarih:'10.06.2026 17:45',order:'U26MS016',model:'1018060-X',renk:'Standart',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:7,dept:'UTU_PAKET'},{tarih:'10.06.2026 17:45',order:'U26FK056',model:'60916-2025',renk:'Standart',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:4,dept:'UTU_PAKET'},{tarih:'10.06.2026 17:45',order:'U26FK056',model:'60916-2025',renk:'Standart',hata:'Patlak, Kaçık, Göz Kaçığı',adet:4,dept:'UTU_PAKET'},{tarih:'10.06.2026 17:45',order:'U26FK056',model:'60916-2025',renk:'Standart',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:60,dept:'UTU_PAKET'},{tarih:'10.06.2026 17:45',order:'U26FK062',model:'60946-FW26',renk:'Standart',hata:'Patlak, Kaçık, Göz Kaçığı',adet:1,dept:'UTU_PAKET'},{tarih:'10.06.2026 17:45',order:'U26FK060',model:'60936-FW26',renk:'Standart',hata:'Patlak, Kaçık, Göz Kaçığı',adet:4,dept:'UTU_PAKET'},{tarih:'11.06.2026 17:36',order:'U26CH001',model:'George Polo-CS608-25',renk:'LACİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:300,dept:'UTU_PAKET'},{tarih:'11.06.2026 17:36',order:'U26CH001',model:'George Polo-CS608-25',renk:'LACİ',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:50,dept:'UTU_PAKET'},{tarih:'11.06.2026 17:36',order:'U26FK056',model:'60916-2025',renk:'PETROL',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:60,dept:'UTU_PAKET'},{tarih:'11.06.2026 17:36',order:'U26KT001',model:'F26MSW1056',renk:'VİZON',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:10,dept:'UTU_PAKET'},{tarih:'11.06.2026 17:36',order:'U26KT001',model:'F26MSW1056',renk:'VİZON',hata:'Patlak, Kaçık, Göz Kaçığı',adet:50,dept:'UTU_PAKET'},{tarih:'11.06.2026 17:36',order:'U26MS016',model:'1018060-X',renk:'YEŞİL',hata:'Yıkama Ense Etikek (Eksik/Yanlış)',adet:10,dept:'UTU_PAKET'},{tarih:'11.06.2026 17:36',order:'U26MS016',model:'1018060-X',renk:'YEŞİL',hata:'Patlak, Kaçık, Göz Kaçığı',adet:3,dept:'UTU_PAKET'},{tarih:'12.06.2026 17:29',order:'U26FK056',model:'60916-2025',renk:'PETROL',hata:'Patlak, Kaçık, Göz Kaçığı',adet:3,dept:'UTU_PAKET'},{tarih:'12.06.2026 17:29',order:'U26FK056',model:'60916-2025',renk:'PETROL',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:10,dept:'UTU_PAKET'},{tarih:'12.06.2026 17:29',order:'U26FK039',model:'64935-2025',renk:'LACİ',hata:'Patlak, Kaçık, Göz Kaçığı',adet:3,dept:'UTU_PAKET'},{tarih:'12.06.2026 17:29',order:'U26CH001',model:'George Polo-CS608-25',renk:'2 RENK',hata:'Pat / Düğme Tamiri / Fermuar Tamiri',adet:350,dept:'UTU_PAKET'}];
+let toplam=0,siparisler={},hatalar={};
+hamVeri.forEach(d=>{
+  toplam+=d.adet;
+  const sipKey=d.order+' | '+d.model;
+  siparisler[sipKey]=(siparisler[sipKey]||0)+d.adet;
+  hatalar[d.hata]=(hatalar[d.hata]||0)+d.adet;
+});
+document.getElementById('totHata').innerText=toplam;
+document.getElementById('totSiparis').innerText=Object.keys(siparisler).length;
+document.getElementById('totHataTur').innerText=Object.keys(hatalar).length;
+const sipSirali=Object.entries(siparisler).sort((a,b)=>b[1]-a[1]).slice(0,3);
+const t3s=document.getElementById('top3Siparis');
+sipSirali.forEach((s,i)=>{
+  const d=document.createElement('div');d.className='kpi-item';
+  d.innerHTML=`<span class='kpi-rank'>${i+1}</span><span class='kpi-name'>${s[0]}</span><span class='kpi-val'>${s[1]}</span>`;
+  t3s.appendChild(d);
+});
+const hataSirali=Object.entries(hatalar).sort((a,b)=>b[1]-a[1]);
+const top3H=hataSirali.slice(0,3);
+const t3h=document.getElementById('top3Hata');
+top3H.forEach((h,i)=>{
+  const d=document.createElement('div');d.className='kpi-item';
+  d.innerHTML=`<span class='kpi-rank'>${i+1}</span><span class='kpi-name'>${h[0]}</span><span class='kpi-val'>${h[1]}</span>`;
+  t3h.appendChild(d);
+});
+const renkler=['#c0392b','#d35400','#8e44ad','#2980b9','#16a085','#27ae60','#f39c12','#546e7a','#8d6e63','#607d8b'];
+const hataKeys=hataSirali.map(h=>h[0]);const hataVals=hataSirali.map(h=>h[1]);
+if(hataKeys.length>0){
+  new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:hataKeys,datasets:[{data:hataVals,backgroundColor:renkler.slice(0,hataKeys.length),borderWidth:1,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+' adet'}}}}});
+}
+const sipKeys=Object.keys(siparisler);const sipVals=Object.values(siparisler);
+if(sipKeys.length>0){
+  new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:sipKeys,datasets:[{label:'Hata Adedi',data:sipVals,backgroundColor:'rgba(90,171,30,0.75)',borderColor:'#4a9a18',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#f0f2f0'},ticks:{color:'#7a8e72',font:{size:11}}},y:{grid:{display:false},ticks:{color:'#2c3a2a',font:{size:11}}}}}});
+}
+const liste=document.getElementById('hataListe');const maxA=hataVals[0]||1;
+hataKeys.forEach((h,idx)=>{
+  const renk=renkler[idx%renkler.length];const pct=toplam>0?(hataVals[idx]*100/toplam).toFixed(1):0;
+  const barP=maxA>0?(hataVals[idx]*100/maxA).toFixed(1):0;
+  const d=document.createElement('div');d.className='hata-row';
+  d.innerHTML=`<div class='hata-dot' style='background:${renk}'></div><div class='hata-adi'>${h}</div><div class='hata-bar-w'><div class='hata-bar-bg'><div class='hata-bar-ic' style='width:${barP}%;background:${renk}'></div></div></div><div class='hata-adet'>${hataVals[idx]}</div><div class='hata-pct'>${pct}%</div>`;
+  liste.appendChild(d);
+});
+}catch(err){console.error('Dashboard hata:',err);}
+</script></body></html>
